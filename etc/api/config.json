@@ -1,0 +1,21 @@
+{
+    "scheme": "https",
+    "host": {
+        "staging": {
+            "front": "staging.front.ecard.pledg.co",
+            "back": "staging.back.ecard.pledg.co"
+        },
+        "prod": {
+            "front": "front.ecard.pledg.co",
+            "back": "back.ecard.pledg.co"
+        }
+    },
+    "endpoints": {
+        "payment_schedule": "/api/users/me/merchants/<merchant_uid>/simulate_payment_schedule",
+        "_payment_schedule": "/api/merchants/<merchant_uid>/simulate_payment_schedule"
+    },
+    "enabled_modes": [
+        "prod",
+        "staging"
+    ]
+}

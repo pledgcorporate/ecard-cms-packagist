@@ -1,0 +1,17 @@
+{
+  "default_locale": "en_GB",
+  "default_domain": "messages",
+  "enabled_locales": [
+        "en_GB",
+        "fr_FR",
+        "de_DE",
+        "es_ES",
+        "pt_PT",
+        "it_IT"
+  ],
+  "enabled_domains": [
+        "messages"
+  ],
+  "resources_dir": "/etc/i18n/translations",
+  "resources_format": "json"
+}

@@ -1,0 +1,12 @@
+{
+    "default_headers": {
+        "Content-Type": "application/json"
+    },
+    "timeout": 30,
+    "ssl": {
+        "verify_peer": 1,
+        "verify_host": 2
+    },
+    "return_transfer": true,
+    "return_as_associative_array": true
+}
