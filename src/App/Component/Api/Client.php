@@ -1,35 +1,25 @@
 <?php
 
-namespace Ecard\Cms\App\Api;
+namespace Ecard\Cms\App\Component\Api;
 
+use Ecard\Cms\App;
+use Ecard\Cms\App\Component;
+use Ecard\Cms\App\Exception\ApiClientException;
 use Ecard\Cms\Dependencies\Unirest\Method;
 use Ecard\Cms\Dependencies\Unirest\Request;
 use Ecard\Cms\Dependencies\Unirest\Response;
-use Ecard\Cms\Exception\ApiClientException;
-use stdClass;
 
-class Client
+class Client extends Component
 {
-    /** @var stdClass */
-    private $config;
-
     /**
-     * @param stdClass $config
+     * @param App $app
      *
      * @return void
      */
     public function __construct(
-        $config = null
+        $app = null
     ) {
-        if (true === empty($config)) {
-            throw new ApiClientException(ApiClientException::MSG_MISSING_PARAMETER_CONFIG);
-        }
-
-        if ('stdClass' !== \get_class($config)) {
-            throw new ApiClientException(ApiClientException::MSG_INVALID_PARAMETER_CONFIG);
-        }
-
-        $this->config = $config;
+        parent::__construct($app);
     }
 
     /**
@@ -178,7 +168,7 @@ class Client
         $request = new Request();
 
         // Set JSON decode mode so we get response body as associative array
-        $request->jsonOpts($this->config->return_as_associative_array);
+        $request->jsonOpts($this->app->config->http_client->return_as_associative_array);
 
         $response = $request->send($method, $url, $data, $mergedHeaders);
 
@@ -194,8 +184,8 @@ class Client
     {
         $ret = [];
 
-        if (true === property_exists($this->config, 'default_headers')) {
-            $ret = get_object_vars($this->config->default_headers);
+        if (true === property_exists($this->app->config->http_client, 'default_headers')) {
+            $ret = get_object_vars($this->app->config->http_client->default_headers);
         }
 
         return $ret;

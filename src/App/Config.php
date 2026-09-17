@@ -2,7 +2,7 @@
 
 namespace Ecard\Cms\App;
 
-use Ecard\Cms\Exception\AppConfigException;
+use Ecard\Cms\App\Exception\AppConfigException;
 use stdClass;
 
 final class Config

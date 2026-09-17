@@ -1,11 +1,11 @@
 <?php
 
-namespace Ecard\Cms\Exception;
+namespace Ecard\Cms\App\Exception;
 
 class ApiClientException extends EcardCmsException
 {
-    const MSG_MISSING_PARAMETER_CONFIG = 'Missing parameter: Api config';
-    const MSG_INVALID_PARAMETER_CONFIG = 'Invalid parameter: Api config';
+    const MSG_MISSING_PARAMETER_APP = 'Missing parameter: app';
+    const MSG_INVALID_PARAMETER_APP = 'Invalid parameter: app';
     const MSG_MISSING_PARAMETER_ENDPOINT = 'Missing parameter: HTTP endpoint';
     const MSG_INVALID_PARAMETER_ENDPOINT = 'Invalid parameter: HTTP endpoint';
     const MSG_MISSING_PARAMETER_METHOD = 'Missing parameter: HTTP method';

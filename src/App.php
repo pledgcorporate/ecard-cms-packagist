@@ -2,23 +2,27 @@
 
 namespace Ecard\Cms;
 
-use Ecard\Cms\App\Api;
-use Ecard\Cms\App\Api\Client;
+use Ecard\Cms\App\Component\Api;
+use Ecard\Cms\App\Component\Api\Client;
+use Ecard\Cms\App\Component\Helper;
+use Ecard\Cms\App\Component\I18n;
 use Ecard\Cms\App\Config;
-use Ecard\Cms\App\I18n;
-use Ecard\Cms\App\JWTSignature;
-use Ecard\Cms\Exception\AppException;
+use Ecard\Cms\App\Exception\AppException;
+use stdClass;
 
 final class App
 {
     /** @var App */
     private static $instance;
 
-    /** @var array<string, mixed> */
-    public $parameters = [];
+    /** @var stdClass */
+    public $parameters;
 
     /** @var Config */
     public $config;
+
+    /** @var Helper */
+    public $helper;
 
     /** @var I18n */
     public $i18n;
@@ -26,30 +30,14 @@ final class App
     /** @var Api */
     public $api;
 
-    /** @var JWTSignature */
-    public $jwt;
-
     /** @var Client */
     public $http_client;
 
     /**
-     * @param array<string, mixed> $parameters
-     *
      * @return void
      */
-    private function __construct(
-        $parameters = []
-    ) {
-        if (
-            true === empty($parameters)
-            || true !== \is_array($parameters)
-        ) {
-            $parameters = [];
-        }
-
-        $this->parameters = $parameters;
-        $this->config = new Config();
-        $this->setup();
+    private function __construct()
+    {
     }
 
     /**
@@ -61,36 +49,38 @@ final class App
         $parameters = []
     ) {
         if (null === self::$instance) {
-            self::$instance = new self($parameters);
+            self::$instance = new self();
         }
+
+        self::$instance->setup($parameters);
 
         return self::$instance;
     }
 
     /**
+     * @param array<string, mixed> $parameters
+     *
      * @return void
      */
-    private function setup()
-    {
-        $locale = null;
-        if (true === \array_key_exists('locale', $this->parameters)) {
-            $locale = trim($this->parameters['locale']);
-        }
+    private function setup(
+        $parameters = []
+    ) {
+        // helpers:
+        $this->helper = new Helper($this);
+
+        $this->parameters = $this->helper->misc->arrayToStdClass($parameters);
+
+        // config:
+        $this->config = new Config();
 
         // translations:
-        $this->i18n = new I18n($this->config->i18n, $locale);
+        $this->i18n = new I18n($this);
 
         // Http client for api calls:
-        $this->http_client = new Client($this->config->http_client);
+        $this->http_client = new Client($this);
 
         // Api endpoints:
-        $this->api = new Api(
-            $this->config->api,
-            $this->http_client
-        );
-
-        // JWT signatures:
-        $this->jwt = new JWTSignature();
+        $this->api = new Api($this);
     }
 
     private function __clone()

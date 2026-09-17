@@ -1,17 +1,15 @@
 <?php
 
-namespace Ecard\Cms\App;
+namespace Ecard\Cms\App\Component;
 
+use Ecard\Cms\App;
+use Ecard\Cms\App\Component;
+use Ecard\Cms\App\Exception\I18nException;
 use Ecard\Cms\Dependencies\Symfony\Component\Translation\Loader\JsonFileLoader;
 use Ecard\Cms\Dependencies\Symfony\Component\Translation\Translator;
-use Ecard\Cms\Exception\I18nException;
-use stdClass;
 
-final class I18n
+final class I18n extends Component
 {
-    /** @var stdClass */
-    private $config;
-
     /** @var string */
     private $locale;
 
@@ -19,32 +17,31 @@ final class I18n
     private $translator;
 
     /**
-     * @param stdClass $config
-     * @param string   $locale
+     * @param App $app
      *
      * @return void
      */
     public function __construct(
-        $config = null,
-        $locale = ''
+        $app = null
     ) {
-        if (true === empty($config)) {
-            throw new I18nException(I18nException::MSG_MISSING_PARAMETER_CONFIG);
-        }
+        parent::__construct($app);
 
-        if ('stdClass' !== \get_class($config)) {
-            throw new I18nException(I18nException::MSG_INVALID_PARAMETER_CONFIG);
-        }
+        $this->locale = $this->app->config->i18n->default_locale;
 
-        $this->config = $config;
-
-        $this->locale = $this->config->default_locale;
-
-        if (true !== empty($locale)
-            && true === $this->isValidLocale($locale)
-            && true === $this->isEnabledLocale($locale)
+        $locale = null;
+        if (
+            true === \property_exists($this->app, 'parameters')
+            && true === \property_exists($this->app->parameters, 'locale')
         ) {
-            $this->locale = $locale;
+            $locale = trim($this->app->parameters->locale);
+
+            if (
+                true !== empty($locale)
+                && true === $this->isValidLocale($locale)
+                && true === $this->isEnabledLocale($locale)
+            ) {
+                $this->locale = $locale;
+            }
         }
 
         $this->setTranslator();
@@ -59,7 +56,7 @@ final class I18n
 
         $this->translator->setFallbackLocales(
             [
-                $this->config->default_locale,
+                $this->app->config->i18n->default_locale,
             ]
         );
 
@@ -73,14 +70,14 @@ final class I18n
      */
     private function loadResources()
     {
-        $patternResourceFiles = __DIR__ . '/../..' . $this->config->resources_dir . '/*.' . $this->config->resources_format;
+        $patternResourceFiles = __DIR__ . '/../../..' . $this->app->config->i18n->resources_dir . '/*.' . $this->app->config->i18n->resources_format;
         $listResourceFiles = glob($patternResourceFiles);
 
         if (
             is_array($listResourceFiles)
             && 0 < count($listResourceFiles)
         ) {
-            $this->translator->addLoader($this->config->resources_format, new JsonFileLoader());
+            $this->translator->addLoader($this->app->config->i18n->resources_format, new JsonFileLoader());
 
             for ($i = 0; $i < count($listResourceFiles); $i++) {
                 $filePath = $listResourceFiles[$i];
@@ -133,7 +130,7 @@ final class I18n
             true === empty($domain)
             || true !== $this->isEnabledDomain($domain)
         ) {
-            $domain = $this->config->default_domain;
+            $domain = $this->app->config->i18n->default_domain;
         }
 
         // every parameter is surrounded by '%' caracters in translation strings
@@ -156,7 +153,7 @@ final class I18n
     private function isEnabledDomain(
         $domain = null
     ) {
-        if (true !== \in_array($domain, $this->config->enabled_domains, true)) {
+        if (true !== \in_array($domain, $this->app->config->i18n->enabled_domains, true)) {
             return false;
         }
 
@@ -186,7 +183,7 @@ final class I18n
     private function isEnabledLocale(
         $locale = null
     ) {
-        if (true !== \in_array($locale, $this->config->enabled_locales, true)) {
+        if (true !== \in_array($locale, $this->app->config->i18n->enabled_locales, true)) {
             return false;
         }
 
@@ -201,7 +198,8 @@ final class I18n
     private function getMatchingLocale(
         $locale = null
     ) {
-        if (true === empty($locale)
+        if (
+            true === empty($locale)
             || true !== $this->isValidLocale($locale)
         ) {
             return $this->locale;
@@ -212,13 +210,13 @@ final class I18n
         }
 
         $localeLang = substr($locale, 0, 2);
-        foreach ($this->config->enabled_locales as $enabledLocale) {
+        foreach ($this->app->config->i18n->enabled_locales as $enabledLocale) {
             $enabledLocaleLang = substr($enabledLocale, 0, 2);
             if ($enabledLocaleLang === $localeLang) {
                 return $enabledLocale;
             }
         }
 
-        return $this->config->default_locale;
+        return $this->app->config->i18n->default_locale;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ecard\Cms\Exception;
+namespace Ecard\Cms\App\Exception;
 
 use Exception;
 

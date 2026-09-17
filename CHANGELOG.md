@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.6 - 2026-09-14
+### Features
+- add payment resolver business rules
+### Fixes
+- fix phpstan remarks
+- fix phpcsfixer alerts
+- set mozart as dev dependency
+- update tree
+- replace bullseye apt repos by bookworm apt repos in Dockerfiles
+
 ## 1.0.5 - 2026-08-27
 ### Features
 - add default timezone in Dockerfiles
