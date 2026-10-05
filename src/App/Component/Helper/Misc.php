@@ -101,8 +101,9 @@ class Misc extends Component
             $priceInUnits = 0.0;
         }
 
-        $priceInUnits = round($priceInUnits, 2);
-        $priceInCents = intval($priceInUnits * 100);
+        $priceInCents = $priceInUnits * 100;
+        $priceInCents = round($priceInCents);
+        $priceInCents = intval($priceInCents);
 
         return $priceInCents;
     }
@@ -121,6 +122,10 @@ class Misc extends Component
             $priceInCents = 0;
         }
 
-        return floatval($priceInCents / 100);
+        $priceInUnits = $priceInCents / 100;
+        $priceInUnits = number_format($priceInUnits, 2, '.', '');
+        $priceInUnits = floatval($priceInUnits);
+
+        return $priceInUnits;
     }
 }

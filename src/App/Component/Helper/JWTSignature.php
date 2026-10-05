@@ -110,7 +110,7 @@ class JWTSignature extends Component
             // $oClaims = $this->app->helper->misc->arrayToStdClass($oClaims);
             $oClaims = $this->app->helper->misc->arrayToStdClass($oClaims);
         } catch (UnsupportedHeaderFound $e) {
-            throw new JWTSignatureException(JWTSignatureException::MSG_DECODING_TOKEN_IMPOSSIBLE);
+            throw new JWTSignatureException(JWTSignatureException::MSG_DECODING_TOKEN_UNSUPPORTED_HEADER);
         } catch (CannotDecodeContent $e) {
             throw new JWTSignatureException(JWTSignatureException::MSG_DECODING_TOKEN_IMPOSSIBLE);
         } catch (InvalidTokenStructure $e) {

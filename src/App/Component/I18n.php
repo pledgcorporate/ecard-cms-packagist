@@ -33,7 +33,8 @@ final class I18n extends Component
             true === \property_exists($this->app, 'parameters')
             && true === \property_exists($this->app->parameters, 'locale')
         ) {
-            $locale = trim($this->app->parameters->locale);
+            $locale = strval($this->app->parameters->locale);
+            $locale = trim($locale);
 
             if (
                 true !== empty($locale)

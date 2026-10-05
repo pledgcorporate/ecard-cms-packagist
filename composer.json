@@ -20,11 +20,13 @@
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-zip": "*",
         "lcobucci/jwt": "^3.0.0 || ^4.0.0 || ^5.0.0",
         "symfony/translation": "^3.4.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0",
         "fig/http-message-util": "^1.1.5",
-        "apimatic/unirest-php": "^3.0.1"
+        "apimatic/unirest-php": "^3.0.1",
+        "giggsey/libphonenumber-for-php": "^8.13.46"
     },
     "autoload": {
         "psr-4": {
@@ -33,7 +35,6 @@
         }
     },
     "require-dev": {
-        "coenjacobs/mozart": "^0.3.0 || ^1.0.0",
         "yoast/phpunit-polyfills": "^2.0.0"
     },
     "autoload-dev": {
@@ -42,24 +43,16 @@
         }
     },
     "extra": {
-        "mozart": {
-            "dep_namespace": "Ecard\\Cms\\Dependencies\\",
-            "dep_directory": "/lib/",
-            "classmap_directory": "/lib/",
+        "strauss": {
+            "target_directory": "/lib/",
+            "namespace_prefix": "Ecard\\Cms\\Dependencies\\",
             "packages": [
                 "lcobucci/jwt",
                 "symfony/translation",
                 "fig/http-message-util",
-                "apimatic/unirest-php"
+                "apimatic/unirest-php",
+                "giggsey/libphonenumber-for-php"
             ]
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "vendor/bin/mozart compose || exit 0"
-        ],
-        "post-update-cmd": [
-            "vendor/bin/mozart compose || exit 0"
-        ]
     }
 }

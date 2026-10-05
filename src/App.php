@@ -10,6 +10,8 @@ use Ecard\Cms\App\Config;
 use Ecard\Cms\App\Exception\AppException;
 use stdClass;
 
+require_once __DIR__ . '/../lib/autoload.php';
+
 final class App
 {
     /** @var App */
