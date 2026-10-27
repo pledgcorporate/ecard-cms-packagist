@@ -4,7 +4,7 @@
 
 namespace Ecard\Cms\Dependencies\Composer\Autoload;
 
-class ComposerStaticInit71564c696d63eb59fcd0383dc61bd628
+class ComposerStaticInitaf528423a4ab9cc2c8e02d634f099b9f
 {
     public static $files = array (
         'e5d5298f3ec5cf68b36667b4165307fc' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -242,9 +242,9 @@ class ComposerStaticInit71564c696d63eb59fcd0383dc61bd628
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit71564c696d63eb59fcd0383dc61bd628::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit71564c696d63eb59fcd0383dc61bd628::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit71564c696d63eb59fcd0383dc61bd628::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitaf528423a4ab9cc2c8e02d634f099b9f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitaf528423a4ab9cc2c8e02d634f099b9f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitaf528423a4ab9cc2c8e02d634f099b9f::$classMap;
 
         }, null, ClassLoader::class);
     }

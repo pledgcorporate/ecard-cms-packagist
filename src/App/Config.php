@@ -22,6 +22,9 @@ final class Config
     /** @var stdClass */
     public $api;
 
+    /** @var stdClass */
+    public $misc;
+
     public function __construct()
     {
         $this->path = __DIR__ . '/../../' . $this->folder;

@@ -29,8 +29,8 @@ class JWTSignature extends Component
     }
 
     /**
-     * @param array<string, mixed> $payload
-     * @param string|null          $secretKey
+     * @param array<string, mixed>|null $payload
+     * @param string|null               $secretKey
      *
      * @return string
      */

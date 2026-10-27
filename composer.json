@@ -45,14 +45,7 @@
     "extra": {
         "strauss": {
             "target_directory": "/lib/",
-            "namespace_prefix": "Ecard\\Cms\\Dependencies\\",
-            "packages": [
-                "lcobucci/jwt",
-                "symfony/translation",
-                "fig/http-message-util",
-                "apimatic/unirest-php",
-                "giggsey/libphonenumber-for-php"
-            ]
+            "namespace_prefix": "Ecard\\Cms\\Dependencies\\"
         }
     }
 }

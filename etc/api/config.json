@@ -11,8 +11,13 @@
         }
     },
     "endpoints": {
-        "payment_schedule": "/api/users/me/merchants/<merchant_uid>/simulate_payment_schedule",
-        "_payment_schedule": "/api/merchants/<merchant_uid>/simulate_payment_schedule"
+        "front": {
+            "payment_schedule": "/api/users/me/merchants/<merchant_uid>/simulate_payment_schedule"
+        },
+        "back": {
+            "token": "/api/token",
+            "payment_schedule": "/api/merchants/<merchant_uid>/simulate_payment_schedule"
+        }
     },
     "enabled_modes": [
         "prod",

@@ -49,6 +49,6 @@ abstract class AbstractLeniency
 
     public function __toString()
     {
-        return str_replace('libphonenumber\\Leniency\\', '', get_class($this));
+        return str_replace('Ecard\\Cms\\Dependencies\\libphonenumber\\Leniency\\', '', get_class($this));
     }
 }

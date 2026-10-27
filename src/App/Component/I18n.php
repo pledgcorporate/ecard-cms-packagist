@@ -28,21 +28,14 @@ final class I18n extends Component
 
         $this->locale = $this->app->config->i18n->default_locale;
 
-        $locale = null;
         if (
             true === \property_exists($this->app, 'parameters')
             && true === \property_exists($this->app->parameters, 'locale')
+            && true !== empty($this->app->parameters->locale)
+            && true === \is_string($this->app->parameters->locale)
         ) {
-            $locale = strval($this->app->parameters->locale);
-            $locale = trim($locale);
-
-            if (
-                true !== empty($locale)
-                && true === $this->isValidLocale($locale)
-                && true === $this->isEnabledLocale($locale)
-            ) {
-                $this->locale = $locale;
-            }
+            $locale = trim($this->app->parameters->locale);
+            $this->locale = $this->getMatchingLocale($locale);
         }
 
         $this->setTranslator();
@@ -62,8 +55,6 @@ final class I18n extends Component
         );
 
         $this->loadResources();
-
-        $this->translator->setLocale($this->locale);
     }
 
     /**
@@ -80,15 +71,13 @@ final class I18n extends Component
         ) {
             $this->translator->addLoader($this->app->config->i18n->resources_format, new JsonFileLoader());
 
-            for ($i = 0; $i < count($listResourceFiles); $i++) {
-                $filePath = $listResourceFiles[$i];
+            foreach ($listResourceFiles as $filePath) {
                 $fileName = basename($filePath);
 
                 $parts = explode('.', $fileName);
                 if (count($parts) >= 3) {
                     $domain = $parts[0];
                     $locale = $parts[1];
-                    $format = $parts[2];
 
                     if (
                         true === $this->isValidLocale($locale)
@@ -97,7 +86,12 @@ final class I18n extends Component
                         && true === is_readable($filePath)
                         && true === is_file($filePath)
                     ) {
-                        $this->translator->addResource($format, $filePath, $locale, $domain);
+                        $this->translator->addResource(
+                            $this->app->config->i18n->resources_format,
+                            $filePath,
+                            $locale,
+                            $domain
+                        );
                     }
                 }
             }
@@ -105,10 +99,10 @@ final class I18n extends Component
     }
 
     /**
-     * @param string               $translationKey
-     * @param array<string, mixed> $parameters
-     * @param string               $locale
-     * @param string               $domain
+     * @param string                    $translationKey
+     * @param array<string, mixed>|null $parameters
+     * @param string                    $locale
+     * @param string                    $domain
      *
      * @return string
      */
@@ -118,15 +112,21 @@ final class I18n extends Component
         $locale = null,
         $domain = null
     ) {
-        if (true === empty($translationKey)) {
+        if (
+            true === empty($translationKey)
+            || true !== \is_string($translationKey)
+            || true === empty(trim($translationKey))
+        ) {
             throw new I18nException(I18nException::MSG_MISSING_PARAMETER_TRANSLATIONKEY);
         }
+
         if (
             true === empty($parameters)
             || true !== \is_array($parameters)
         ) {
             $parameters = [];
         }
+
         if (
             true === empty($domain)
             || true !== $this->isEnabledDomain($domain)
@@ -135,15 +135,17 @@ final class I18n extends Component
         }
 
         // every parameter is surrounded by '%' caracters in translation strings
+        $wrappedParameters = [];
         foreach ($parameters as $key => $value) {
-            $newKey = '%' . $key . '%';
-            $parameters[$newKey] = $value;
-            unset($parameters[$key]);
+            $cleanKey = trim($key, '%');
+            $newKey = '%' . $cleanKey . '%';
+            $wrappedParameters[$newKey] = $value;
         }
 
         $selectedLocale = $this->getMatchingLocale($locale);
+        $translatedText = $this->translator->trans($translationKey, $wrappedParameters, $domain, $selectedLocale);
 
-        return $this->translator->trans($translationKey, $parameters, $domain, $selectedLocale);
+        return $translatedText;
     }
 
     /**
@@ -154,11 +156,9 @@ final class I18n extends Component
     private function isEnabledDomain(
         $domain = null
     ) {
-        if (true !== \in_array($domain, $this->app->config->i18n->enabled_domains, true)) {
-            return false;
-        }
+        $ret = \in_array($domain, $this->app->config->i18n->enabled_domains, true);
 
-        return true;
+        return $ret;
     }
 
     /**
@@ -169,7 +169,10 @@ final class I18n extends Component
     private function isValidLocale(
         $locale = null
     ) {
-        if (1 !== preg_match('/^[a-z]{2}_[A-Z]{2}$/', $locale)) {
+        if (
+            true === empty($locale)
+            || 1 !== preg_match('/^[a-z]{2}_[A-Z]{2}$/', $locale)
+        ) {
             return false;
         }
 
@@ -184,11 +187,9 @@ final class I18n extends Component
     private function isEnabledLocale(
         $locale = null
     ) {
-        if (true !== \in_array($locale, $this->app->config->i18n->enabled_locales, true)) {
-            return false;
-        }
+        $ret = \in_array($locale, $this->app->config->i18n->enabled_locales, true);
 
-        return true;
+        return $ret;
     }
 
     /**
@@ -196,28 +197,51 @@ final class I18n extends Component
      *
      * @return string
      */
-    private function getMatchingLocale(
+    public function getMatchingLocale(
         $locale = null
     ) {
         if (
             true === empty($locale)
-            || true !== $this->isValidLocale($locale)
+            || true !== \is_string($locale)
         ) {
             return $this->locale;
         }
 
-        if (true === $this->isEnabledLocale($locale)) {
+        $locale = str_replace('-', '_', $locale);
+
+        if (
+            true === $this->isValidLocale($locale)
+            && true === $this->isEnabledLocale($locale)
+        ) {
             return $locale;
         }
 
+        // in case locale is not valid but is a language iso code
         $localeLang = substr($locale, 0, 2);
-        foreach ($this->app->config->i18n->enabled_locales as $enabledLocale) {
-            $enabledLocaleLang = substr($enabledLocale, 0, 2);
-            if ($enabledLocaleLang === $localeLang) {
-                return $enabledLocale;
+
+        return $this->getLocaleFromLang($localeLang);
+    }
+
+    /**
+     * @param string $lang
+     *
+     * @return string
+     */
+    private function getLocaleFromLang(
+        $lang = null
+    ) {
+        if (true !== empty($lang)) {
+            $lang = strtolower($lang);
+
+            foreach ($this->app->config->i18n->enabled_locales as $enabledLocale) {
+                $enabledLocaleLang = substr($enabledLocale, 0, 2);
+                if ($enabledLocaleLang === $lang) {
+                    return $enabledLocale;
+                }
             }
         }
 
-        return $this->app->config->i18n->default_locale;
+        // if we dont find any matching locale:
+        return $this->locale;
     }
 }

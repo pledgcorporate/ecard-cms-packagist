@@ -1,0 +1,7 @@
+{
+    "regex": {
+        "pledg_merchant_uid": "/^mer_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/",
+        "pledg_company_uid": "/^cmp_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/",
+        "pledg_merchant_group_uid": "/^mgrp_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/"
+    }
+}

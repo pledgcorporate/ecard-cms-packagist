@@ -22,6 +22,7 @@ class Misc extends Component
     /**
      * Recursively casts an array to a stdClass object
      * - used by JWTSignature when decoding a jwt message.
+     * - used by api calls when returning result.
      *
      * @param mixed|array<string, mixed> $data
      *
@@ -34,10 +35,20 @@ class Misc extends Component
 
         if (
             true !== empty($data)
-            && true === is_array($data)
+            && (
+                true === is_array($data)
+                || true === is_object($data)
+            )
         ) {
+            if (true === is_object($data)) {
+                $data = get_object_vars($data);
+            }
+
             foreach ($data as $key => $value) {
-                if (is_array($value)) {
+                if (
+                    true === is_array($value)
+                    || true === is_object($value)
+                ) {
                     $object->{$key} = $this->arrayToStdClass($value);
                 } else {
                     $object->{$key} = $value;
@@ -127,5 +138,77 @@ class Misc extends Component
         $priceInUnits = floatval($priceInUnits);
 
         return $priceInUnits;
+    }
+
+    /**
+     * checks if $uid is a valid pledg merchant uid (e.g. 'mer_<uuid>').
+     *
+     * @param string|null $uid
+     *
+     * @return bool
+     */
+    public function isValidMerchantUid(
+        $uid
+    ) {
+        return $this->isMatchingRegex(
+            $this->app->config->misc->regex->pledg_merchant_uid,
+            $uid
+        );
+    }
+
+    /**
+     * checks if $uid is a valid pledg company uid (e.g. 'cmp_<uuid>').
+     *
+     * @param string|null $uid
+     *
+     * @return bool
+     */
+    public function isValidCompanyUid(
+        $uid
+    ) {
+        return $this->isMatchingRegex(
+            $this->app->config->misc->regex->pledg_company_uid,
+            $uid
+        );
+    }
+
+    /**
+     * checks if $uid is a valid pledg merchant group uid (e.g. 'mgrp_<uuid>').
+     *
+     * @param string|null $uid
+     *
+     * @return bool
+     */
+    public function isValidMerchantGroupUid(
+        $uid
+    ) {
+        return $this->isMatchingRegex(
+            $this->app->config->misc->regex->pledg_merchant_group_uid,
+            $uid
+        );
+    }
+
+    /**
+     * checks if $uid is not empty and matches $regex.
+     *
+     * @param string      $regex
+     * @param string|null $uid
+     *
+     * @return bool
+     */
+    private function isMatchingRegex(
+        $regex,
+        $uid
+    ) {
+        if (true === empty($uid)) {
+            return false;
+        }
+
+        $match = preg_match($regex, $uid);
+        if (1 === $match) {
+            return true;
+        }
+
+        return false;
     }
 }

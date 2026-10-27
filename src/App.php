@@ -5,6 +5,9 @@ namespace Ecard\Cms;
 use Ecard\Cms\App\Component\Api;
 use Ecard\Cms\App\Component\Api\Client;
 use Ecard\Cms\App\Component\Helper;
+use Ecard\Cms\App\Component\Http\Request;
+use Ecard\Cms\App\Component\Http\RequestFactory;
+use Ecard\Cms\App\Component\Http\Response;
 use Ecard\Cms\App\Component\I18n;
 use Ecard\Cms\App\Config;
 use Ecard\Cms\App\Exception\AppException;
@@ -34,6 +37,23 @@ final class App
 
     /** @var Client */
     public $http_client;
+
+    /** @var RequestFactory */
+    public $request_factory;
+
+    /**
+     * the incoming http request (built by the first App::get() call, then kept across App::get() calls).
+     *
+     * @var Request
+     */
+    public $request;
+
+    /**
+     * the outgoing http response (built by the first App::get() call, then kept across App::get() calls).
+     *
+     * @var Response
+     */
+    public $response;
 
     /**
      * @return void
@@ -83,6 +103,20 @@ final class App
 
         // Api endpoints:
         $this->api = new Api($this);
+
+        // factory of objects representing the incoming HTTP request
+        // (immutable: configure it with its with*() methods, which return a copy):
+        $this->request_factory = new RequestFactory($this);
+
+        // incoming http request (built once, unlike the components):
+        if (null === $this->request) {
+            $this->request = $this->request_factory->fromGlobals();
+        }
+
+        // outgoing http response (built once: the status code and headers are global to the php process):
+        if (null === $this->response) {
+            $this->response = new Response($this->request);
+        }
     }
 
     private function __clone()

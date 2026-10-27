@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.0.9 - 2026-10-27
+### Features
+- add http response classes
+- strip c1 control characters in incoming http requests
+- add back version of payment schedule api call
+- add authentication api call
+- add classes to interpret incoming http requests
+- separate front and back versions of payment schedule api
+- rename paymentSchedule as frontPaymentSchedule
+- add unit tests for misc class
+- add regex checks for pledg uids
+- upgrade strauss 0.30.0 -> 0.31.0
+### Fixes
+- fix incoming http request naming
+- move staging merchant uids to environment variables and use fake uids in unit tests
+- remove useless composer files
+- fix docblocks in unit tests
+- fix i18n parameters handling
+- fix php7x Dockerfile
+- move docker-compose.yml + fix php56 Dockerfile
+
 ## 1.0.8 - 2026-10-06
 ### Features
 - add e164 helper for phone number normalization
