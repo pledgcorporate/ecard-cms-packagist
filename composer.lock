@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dcc84cb78d05d3f42f55ec9c22f12be0",
+    "content-hash": "366cb0612d55aeb6ce1c85674ef4a43e",
     "packages": [
         {
             "name": "apimatic/unirest-php",

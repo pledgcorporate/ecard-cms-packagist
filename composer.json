@@ -29,10 +29,9 @@
         "giggsey/libphonenumber-for-php": "^8.13.46"
     },
     "autoload": {
-        "psr-4": {
-            "Ecard\\Cms\\": "src/",
-            "Ecard\\Cms\\Dependencies\\": "lib/"
-        }
+        "psr-4": { "Ecard\\Cms\\": "src/" },
+        "classmap": ["lib/"],
+        "exclude-from-classmap": ["lib/**/tests/", "lib/**/Tests/"]
     },
     "require-dev": {
         "yoast/phpunit-polyfills": "^2.0.0"
@@ -45,7 +44,10 @@
     "extra": {
         "strauss": {
             "target_directory": "/lib/",
-            "namespace_prefix": "Ecard\\Cms\\Dependencies\\"
+            "namespace_prefix": "Ecard\\Cms\\Dependencies\\",
+            "exclude_from_copy": {
+                "file_patterns": ["#/[Tt]ests/#"]
+            }
         }
     }
 }

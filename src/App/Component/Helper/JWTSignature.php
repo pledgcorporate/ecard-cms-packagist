@@ -86,11 +86,24 @@ class JWTSignature extends Component
             $signingKey
         );
 
+        $constraints = [
+            new SignedWith(
+                $signer,
+                $signingKey
+            ),
+        ];
+
         $result = null;
         $oClaims = new stdClass();
 
         try {
             $result = $configuration->parser()->parse($token);
+
+            $isValidatedSigningKey = $configuration->validator()->validate($result, ...$constraints);
+            if (true !== $isValidatedSigningKey) {
+                throw new JWTSignatureException(JWTSignatureException::MSG_DECODING_NON_MATCHING_SECRET);
+            }
+
             $claims = $result->claims();
             $objClaims = $claims->all();
 
@@ -107,7 +120,6 @@ class JWTSignature extends Component
                 $oClaims = json_decode($jsonEncodedClaims, true);
             }
 
-            // $oClaims = $this->app->helper->misc->arrayToStdClass($oClaims);
             $oClaims = $this->app->helper->misc->arrayToStdClass($oClaims);
         } catch (UnsupportedHeaderFound $e) {
             throw new JWTSignatureException(JWTSignatureException::MSG_DECODING_TOKEN_UNSUPPORTED_HEADER);

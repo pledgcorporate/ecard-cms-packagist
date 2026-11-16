@@ -4,6 +4,7 @@ namespace Ecard\Cms;
 
 use Ecard\Cms\App\Component\Api;
 use Ecard\Cms\App\Component\Api\Client;
+use Ecard\Cms\App\Component\Constants;
 use Ecard\Cms\App\Component\Helper;
 use Ecard\Cms\App\Component\Http\Request;
 use Ecard\Cms\App\Component\Http\RequestFactory;
@@ -22,6 +23,9 @@ final class App
 
     /** @var stdClass */
     public $parameters;
+
+    /** @var Constants */
+    public $const;
 
     /** @var Config */
     public $config;
@@ -87,6 +91,9 @@ final class App
     private function setup(
         $parameters = []
     ) {
+        // constants:
+        $this->const = new Constants($this);
+
         // helpers:
         $this->helper = new Helper($this);
 

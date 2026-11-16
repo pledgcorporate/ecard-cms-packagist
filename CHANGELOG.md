@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.10 - 2026-11-16
+### Features
+- add http constants in app singleton
+### Fixes
+- remove tests of dependencies libs
+- use an ubuntu fixed version (24.04) in ci/cd
+- add key validation in decode() to catch tampered payloads JWTSignature helper
+
 ## 1.0.9 - 2026-10-27
 ### Features
 - add http response classes

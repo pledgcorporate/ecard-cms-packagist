@@ -4,7 +4,7 @@
     'name' => 'ecard/cms',
     'pretty_version' => 'dev-main',
     'version' => 'dev-main',
-    'reference' => '6a17a56f77d22f1d817fed153d158c3ce930f842',
+    'reference' => 'd68d6dbd7a955a953f7d62e45b3a57fb8e42f27f',
     'type' => 'library',
     'install_path' => __DIR__ . '/../',
     'aliases' => 
